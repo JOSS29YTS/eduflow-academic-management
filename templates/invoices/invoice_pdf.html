@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ invoice.invoice_number }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 40px;
+            background: #ffffff;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 850;
+            font-size: 20px;
+        }
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+        .invoice-title-section {
+            text-align: right;
+        }
+        .invoice-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #4f46e5;
+            margin: 0;
+        }
+        .invoice-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .details-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+        .details-col {
+            flex: 1;
+        }
+        .details-col h4 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        .details-col p {
+            margin: 3px 0;
+            color: #334155;
+        }
+        .details-col strong {
+            color: #0f172a;
+        }
+        .table-container {
+            margin-bottom: 45px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            color: #475569;
+            font-weight: 700;
+            padding: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .item-description {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .item-subtext {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        .totals-box {
+            width: 250px;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .totals-row.grand-total {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-top: 10px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 25px;
+            margin-top: 40px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-box">
+    
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo-box">EF</div>
+            <div class="brand-name">EduFlow</div>
+        </div>
+        <div class="invoice-title-section">
+            <h1 class="invoice-title">FACTURA</h1>
+            <div class="invoice-number">{{ invoice.invoice_number }}</div>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+        <div class="details-col">
+            <h4>Emisor</h4>
+            <p><strong>EduFlow Inc.</strong></p>
+            <p>Av. Francisco de Miranda, Torre Delta</p>
+            <p>Caracas, Venezuela</p>
+            <p>contacto@eduflow.com</p>
+        </div>
+        <div class="details-col">
+            <h4>Cliente</h4>
+            <p><strong>{{ invoice.payment.enrollment.student.full_name }}</strong></p>
+            <p>Correo: {{ invoice.recipient_email }}</p>
+            <p>Teléfono: {{ invoice.payment.enrollment.student.phone|default:"—" }}</p>
+        </div>
+        <div class="details-col">
+            <h4>Detalles</h4>
+            <p>Fecha de Emisión: <strong>{{ invoice.issued_at|date:"d M, Y" }}</strong></p>
+            <p>Método de Pago: <strong>{{ invoice.payment.get_payment_method_display }}</strong></p>
+            <p>Referencia: <strong>{{ invoice.payment.reference_number|default:"—" }}</strong></p>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="item-description">Inscripción / Abono al Diplomado</div>
+                        <div class="item-subtext">Curso: {{ invoice.payment.enrollment.course.name }} ({{ invoice.payment.enrollment.course.code }})</div>
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">${{ invoice.payment.amount }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Totals -->
+    <div class="totals-section">
+        <div class="totals-box">
+            <div class="totals-row">
+                <span style="color: #64748b;">Subtotal:</span>
+                <span style="font-weight: 600;">${{ invoice.payment.amount }}</span>
+            </div>
+            <div class="totals-row">
+                <span style="color: #64748b;">Impuestos (0%):</span>
+                <span style="font-weight: 600;">$0.00</span>
+            </div>
+            <div class="totals-row grand-total">
+                <span>Total Cancelado:</span>
+                <span>${{ invoice.payment.amount }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Gracias por tu preferencia. Esta es una factura electrónica generada automáticamente por EduFlow.</p>
+        <p>© 2026 EduFlow. Todos los derechos reservados.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

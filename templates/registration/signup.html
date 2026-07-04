@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFlow — Registro de Alumnos</title>
+    
+    <!-- Script to check theme before rendering page (prevents white flicker) -->
+    <script>
+        if (localStorage.getItem('darkMode') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            950: 'var(--bg-main)',
+                            900: 'var(--bg-card)',
+                            800: 'var(--border-card)',
+                            100: 'var(--text-main)',
+                            400: 'var(--text-muted)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        .dark {
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --border-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        /* Light Mode specific overrides to maintain high readability and contrast */
+        html:not(.dark) body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        html:not(.dark) .text-white {
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-100 {
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-200 {
+            color: #1e293b !important;
+        }
+        html:not(.dark) .text-slate-300 {
+            color: #334155 !important;
+        }
+        html:not(.dark) .text-slate-400 {
+            color: #334155 !important;
+        }
+        html:not(.dark) .bg-slate-900\/20,
+        html:not(.dark) .bg-slate-900\/10 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05) !important;
+        }
+        html:not(.dark) .bg-slate-950 {
+            background-color: #f8fafc !important;
+        }
+        /* Soft, premium borders in dark mode (resolves Tailwind opacity variable bug) */
+        .border-slate-800,
+        [class*="border-slate-800"] {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+        /* Soft, premium borders in light mode */
+        html:not(.dark) .border-slate-800,
+        html:not(.dark) [class*="border-slate-800"] {
+            border-color: rgba(15, 23, 42, 0.08) !important;
+        }
+        /* Garantizar texto blanco en botones y enlaces primarios */
+        html:not(.dark) .bg-indigo-600,
+        html:not(.dark) .bg-indigo-600 *,
+        html:not(.dark) .bg-indigo-700,
+        html:not(.dark) .bg-indigo-700 * {
+            color: #ffffff !important;
+        }
+        html:not(.dark) .bg-indigo-600.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-indigo-600 .text-white:not(.dark):not(.dark *) {
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-center items-center bg-slate-950 text-slate-100 px-4 relative overflow-hidden" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'light' }">
+    
+    <!-- Theme Toggle Button (Top-Right) -->
+    <div class="fixed top-6 right-6 z-50">
+        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', darkMode)" 
+                class="p-2.5 rounded-xl text-slate-400 hover:text-white bg-slate-900/40 border border-slate-800/40 hover:bg-slate-800/60 transition duration-200"
+                title="Cambiar Tema">
+            <!-- Sun Icon (visible in Dark Mode) -->
+            <svg x-show="darkMode" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+            <!-- Moon Icon (visible in Light Mode) -->
+            <svg x-show="!darkMode" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" x-cloak>
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Centered background glow behind the card -->
+    <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-600/12 rounded-full blur-3xl pointer-events-none z-0"></div>
+
+    <div class="w-full max-w-2xl z-10 space-y-6 my-10">
+        
+        <!-- Logo and header -->
+        <div class="text-center space-y-2">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20 text-white font-black text-2xl" style="color: #ffffff !important;">
+                EF
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white mt-4">Crea tu cuenta de Estudiante</h1>
+            <p class="text-sm text-slate-400">Regístrate para solicitar acceso a la plataforma académica EduFlow.</p>
+        </div>
+
+        <!-- Signup Card -->
+        <div class="rounded-3xl border border-slate-800/80 bg-slate-900/10 p-8 shadow-2xl backdrop-blur-md">
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium space-y-1">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Fields Grid (Reorganized into 2 balanced columns) -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- First Name -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label for="{{ form.first_name.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nombre</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label for="{{ form.last_name.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Apellido</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Username -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label for="{{ form.username.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Usuario (Único)</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1">
+                        <label for="{{ form.phone.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Teléfono de Contacto</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.phone.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="space-y-1.5 col-span-2">
+                        <label for="{{ form.email.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Correo Electrónico</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1" x-data="{ showPassword: false }">
+                        <label for="{{ form.password.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Contraseña</label>
+                        <div class="relative">
+                            {{ form.password }}
+                            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition">
+                                <!-- Eye open icon (visible when showPassword is true) -->
+                                <svg x-show="showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                                <!-- Eye closed/slashed icon (visible when showPassword is false) -->
+                                <svg x-show="!showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 1-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="space-y-1.5 col-span-2 sm:col-span-1" x-data="{ showConfirmPassword: false }">
+                        <label for="{{ form.confirm_password.id_for_label }}" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Confirmar contraseña</label>
+                        <div class="relative">
+                            {{ form.confirm_password }}
+                            <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition">
+                                <!-- Eye open icon (visible when showConfirmPassword is true) -->
+                                <svg x-show="showConfirmPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                                <!-- Eye closed/slashed icon (visible when showConfirmPassword is false) -->
+                                <svg x-show="!showConfirmPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 1-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.confirm_password.errors %}
+                        <p class="text-[10px] text-rose-400 font-medium">{{ form.confirm_password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 py-3.5 text-sm font-bold text-white transition shadow-lg shadow-indigo-600/15 mt-2">
+                    Solicitar Registro
+                </button>
+            </form>
+            
+            <!-- Back to login link -->
+            <div class="mt-6 text-center text-xs">
+                <span class="text-slate-500">¿Ya tienes una cuenta?</span>
+                <a href="{% url 'login' %}" class="font-bold text-indigo-400 hover:text-indigo-300 ml-1 transition">
+                    Inicia Sesión
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Safe Info Box -->
+        <div class="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 text-[11px] text-slate-400 text-center leading-normal">
+            <strong>🔒 Aprobación Requerida:</strong> Por políticas de seguridad de EduFlow, después del registro, tu cuenta estará inactiva. Un administrador de tu academia debe verificar tu identidad e iniciar tu acceso.
+        </div>
+
+    </div>
+</body>
+</html>

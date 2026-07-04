@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full dark">
+<head>
+    <!-- Script to check theme before rendering page (prevents white flicker) -->
+    <script>
+        if (localStorage.getItem('darkMode') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduFlow{% endblock %} — Gestión Académica</title>
+    
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        // Override slate colors to map to CSS variables
+                        slate: {
+                            950: 'var(--bg-main)',
+                            900: 'var(--bg-card)',
+                            800: 'var(--border-card)',
+                            100: 'var(--text-main)',
+                            400: 'var(--text-muted)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Alpine.js (Lightweight UI states) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- HTMX (AJAX interactions) -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        :root {
+            --bg-main: #f8fafc;        /* slate-50 */
+            --bg-card: #ffffff;        /* white */
+            --border-card: #e2e8f0;    /* slate-200 */
+            --text-main: #0f172a;      /* slate-900 */
+            --text-muted: #475569;     /* slate-600 */
+        }
+
+        .dark {
+            --bg-main: #020617;        /* slate-950 */
+            --bg-card: #0f172a;        /* slate-900 */
+            --border-card: #1e293b;    /* slate-800 */
+            --text-main: #f1f5f9;      /* slate-100 */
+            --text-muted: #94a3b8;     /* slate-400 */
+        }
+
+        /* Smooth custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-card); }
+        ::-webkit-scrollbar-thumb { background: var(--border-card); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Light Mode specific overrides to maintain high readability and contrast */
+        html:not(.dark) {
+            color-scheme: light;
+        }
+        html:not(.dark) body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        html:not(.dark) .text-white:not(.dark):not(.dark *) {
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-100:not(.dark):not(.dark *) {
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-200:not(.dark):not(.dark *) {
+            color: #1e293b !important;
+        }
+        html:not(.dark) .text-slate-300:not(.dark):not(.dark *) {
+            color: #334155 !important;
+        }
+        html:not(.dark) .text-slate-400:not(.dark):not(.dark *) {
+            color: #334155 !important; /* Más oscuro para que se lea bien en tamaños pequeños */
+        }
+        html:not(.dark) .bg-slate-900:not(.dark):not(.dark *) {
+            background-color: #f1f5f9 !important; /* Fondo gris suave para el bloque del calendario */
+            border-color: #e2e8f0 !important;
+        }
+        html:not(.dark) .text-indigo-400:not(.dark):not(.dark *) {
+            color: #4f46e5 !important; /* Indigo oscuro para links e información secundaria */
+        }
+        html:not(.dark) .text-indigo-300:not(.dark):not(.dark *) {
+            color: #4338ca !important;
+        }
+        html:not(.dark) .text-emerald-400:not(.dark):not(.dark *) {
+            color: #047857 !important; /* Verde oscuro para estados activos */
+        }
+        html:not(.dark) .text-amber-400:not(.dark):not(.dark *) {
+            color: #b45309 !important; /* Ámbar oscuro para estados pendientes */
+        }
+        html:not(.dark) .text-rose-400:not(.dark):not(.dark *) {
+            color: #be123c !important; /* Rojo oscuro para estados de ausencia/error */
+        }
+        html:not(.dark) .text-purple-400:not(.dark):not(.dark *) {
+            color: #6d28d9 !important; /* Púrpura oscuro para estados justificados */
+        }
+        /* Garantizar texto blanco en botones y enlaces primarios (Resolución de Conflicto de Especificidad) */
+        html:not(.dark) .bg-indigo-600,
+        html:not(.dark) .bg-indigo-600 *,
+        html:not(.dark) .bg-indigo-700,
+        html:not(.dark) .bg-indigo-700 *,
+        html:not(.dark) .from-indigo-500,
+        html:not(.dark) .from-indigo-500 *,
+        html:not(.dark) .from-indigo-600,
+        html:not(.dark) .from-indigo-600 *,
+        html:not(.dark) .bg-brand-500,
+        html:not(.dark) .bg-brand-500 *,
+        html:not(.dark) .bg-brand-600,
+        html:not(.dark) .bg-brand-600 *,
+        html:not(.dark) .bg-brand-700,
+        html:not(.dark) .bg-brand-700 *,
+        html:not(.dark) .bg-emerald-600,
+        html:not(.dark) .bg-emerald-600 * {
+            color: #ffffff !important;
+        }
+        html:not(.dark) .bg-indigo-600.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-indigo-600 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-indigo-700.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-indigo-700 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .from-indigo-500.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .from-indigo-500 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .from-indigo-600.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .from-indigo-600 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-500.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-500 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-600.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-600 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-700.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-brand-700 .text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-emerald-600.text-white:not(.dark):not(.dark *),
+        html:not(.dark) .bg-emerald-600 .text-white:not(.dark):not(.dark *) {
+            color: #ffffff !important;
+        }
+        html:not(.dark) .bg-slate-900\/20:not(.dark):not(.dark *),
+        html:not(.dark) .bg-slate-900\/10:not(.dark):not(.dark *) {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05) !important;
+        }
+        html:not(.dark) .bg-slate-900\/40:not(.dark):not(.dark *) {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+        }
+        html:not(.dark) .bg-slate-950:not(.dark):not(.dark *) {
+            background-color: #f8fafc !important;
+        }
+        /* Soft, premium borders in dark mode (resolves Tailwind opacity variable bug) */
+        .border-slate-800,
+        [class*="border-slate-800"] {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+        /* Soft, premium borders in light mode */
+        html:not(.dark) .border-slate-800:not(.dark):not(.dark *),
+        html:not(.dark) [class*="border-slate-800"]:not(.dark):not(.dark *) {
+            border-color: rgba(15, 23, 42, 0.08) !important;
+        }
+        html:not(.dark) .divide-slate-800\/40:not(.dark):not(.dark *) > * + * {
+            border-color: #e2e8f0 !important;
+        }
+        html:not(.dark) .divide-slate-850\/60:not(.dark):not(.dark *) > * + * {
+            border-color: #e2e8f0 !important;
+        }
+        html:not(.dark) .bg-slate-955\/20:not(.dark):not(.dark *),
+        html:not(.dark) .bg-slate-950\/20:not(.dark):not(.dark *) {
+            background-color: #f1f5f9 !important;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full flex flex-col font-sans antialiased bg-slate-950 text-slate-100" x-data="{ sidebarOpen: false, darkMode: localStorage.getItem('darkMode') !== 'light' }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+    <!-- Wrapper for Sidebar + Content -->
+    <div class="flex h-full overflow-hidden">
+        
+        <!-- SIDEBAR (Only if user is authenticated) -->
+        {% if user.is_authenticated %}
+        <!-- Mobile Sidebar Backdrop -->
+        <div x-show="sidebarOpen" 
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm lg:hidden"
+             @click="sidebarOpen = false"
+             x-cloak></div>
+
+        <!-- Sidebar Container -->
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+               class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-900 border-r border-slate-800/60 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:flex-shrink-0">
+            
+            <!-- Logo area -->
+            <div class="flex h-20 items-center justify-between px-6 border-b border-slate-800/40">
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-2.5">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25 text-white font-extrabold text-lg" style="color: #ffffff !important;">EF</span>
+                    <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-950 via-indigo-900 to-indigo-800 bg-clip-text text-transparent dark:from-white dark:via-slate-100 dark:to-slate-400">EduFlow</span>
+                </a>
+                <button @click="sidebarOpen = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- User profile summary -->
+            <div class="px-6 py-5 border-b border-slate-800/40 bg-slate-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-semibold text-base uppercase">
+                        {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1"|default:user.username|slice:":1" }}
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="font-medium text-slate-200 truncate">{{ user.full_name }}</h4>
+                        <span class="inline-flex items-center rounded-md bg-indigo-500/10 px-2 py-0.5 text-xs font-medium text-indigo-400 border border-indigo-500/20 mt-1 uppercase tracking-wide">
+                            {{ user.get_role_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition group font-medium {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-600/15 text-indigo-400 border-l-4 border-indigo-500 pl-3{% endif %}">
+                    <svg class="h-5 w-5 text-slate-400 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    <span>Panel de Control</span>
+                </a>
+
+                <a href="{% url 'course_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition group font-medium {% if 'courses' in request.path %}bg-indigo-600/15 text-indigo-400 border-l-4 border-indigo-500 pl-3{% endif %}">
+                    <svg class="h-5 w-5 text-slate-400 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.9c2.79 0 5.437-.472 7.9-1.32.08-.291.15-.59.21-.891A1 1 0 0 0 19.1 17.5a48.83 48.83 0 0 0-4.89-3.228m-6.22-4.125a3.375 3.375 0 1 1 6.75 0M9.05 9.078a3.375 3.375 0 1 0-4.49 4.488m14.88-4.488a3.375 3.375 0 1 1 4.49 4.488M3.75 9.75h16.5M3.75 14.25h16.5M12 3v3.75m0 3v13.5" />
+                    </svg>
+                    <span>Mis Cursos</span>
+                </a>
+
+                <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition group font-medium {% if request.resolver_match.url_name == 'profile' %}bg-indigo-600/15 text-indigo-400 border-l-4 border-indigo-500 pl-3{% endif %}">
+                    <svg class="h-5 w-5 text-slate-400 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                    <span>Mi Perfil</span>
+                </a>
+
+                {% if user.role == 'admin' or user.role == 'coordinator' %}
+                <!-- Admin specific links -->
+                <a href="/admin/" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition group font-medium">
+                    <svg class="h-5 w-5 text-slate-400 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <span>Administración (Django)</span>
+                </a>
+                {% endif %}
+            </nav>
+
+            <!-- Bottom logout area -->
+            <div class="p-4 border-t border-slate-800/40">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition font-medium">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                        </svg>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+        {% endif %}
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex flex-1 flex-col overflow-hidden bg-slate-950">
+            <!-- Topbar (visible when logged in) -->
+            {% if user.is_authenticated %}
+            <header class="flex h-20 items-center justify-between px-6 md:px-10 border-b border-slate-800 bg-slate-900/10 backdrop-blur-md">
+                <!-- Left side: Mobile menu toggle only -->
+                <div class="flex items-center gap-2 lg:hidden">
+                    <button @click="sidebarOpen = true" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                    <span class="font-bold text-lg text-white">EduFlow</span>
+                </div>
+                
+                <!-- Desktop placeholder to push toggle to the right -->
+                <div class="hidden lg:block"></div>
+                
+                <!-- Right side: Theme Toggle -->
+                <div class="flex items-center gap-4">
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', darkMode)" 
+                            class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition duration-200 border border-slate-800/40"
+                            title="Cambiar Tema">
+                        <!-- Sun Icon (visible in Dark Mode) -->
+                        <svg x-show="darkMode" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4" />
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                        </svg>
+                        <!-- Moon Icon (visible in Light Mode) -->
+                        <svg x-show="!darkMode" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" x-cloak>
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+            {% endif %}
+
+            <!-- Scrollable Content Wrapper -->
+            <main class="flex-1 overflow-y-auto px-6 py-8 md:px-10 lg:py-10">
+                {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                    <div class="flex items-center justify-between p-4 rounded-xl border {% if message.tags == 'error' %}bg-rose-500/10 border-rose-500/30 text-rose-400{% elif message.tags == 'success' %}bg-emerald-500/10 border-emerald-500/30 text-emerald-400{% else %}bg-indigo-500/10 border-indigo-500/30 text-indigo-400{% endif %}" x-data="{ show: true }" x-show="show">
+                        <span class="text-sm font-medium">{{ message }}</span>
+                        <button @click="show = false" class="text-slate-400 hover:text-white">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+    </div>
+
+</body>
+</html>

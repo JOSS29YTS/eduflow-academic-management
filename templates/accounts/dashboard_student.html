@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Estudiante{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    
+    <!-- Top Header -->
+    <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-white">Mi Portal Académico</h1>
+            <p class="text-sm text-slate-400">Bienvenido, {{ user.first_name }}. Revisa tu estado académico, asistencia y facturación.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center rounded-xl bg-slate-900 border border-slate-800 px-4 py-2.5 text-sm font-medium text-slate-300">
+                Estudiante
+            </span>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Attendance Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Asistencia Promedio</p>
+                    <h3 class="mt-2 text-3xl font-extrabold text-white">{{ attendance_rate }}%</h3>
+                    <p class="text-xs text-slate-400 mt-1">Clases: {{ present_classes }} asistidas de {{ total_classes }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+        </div>
+
+        <!-- Enrolled Courses Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mis Cursos</p>
+                    <h3 class="mt-2 text-3xl font-extrabold text-white">{{ enrollments.count }}</h3>
+                    <p class="text-xs text-slate-400 mt-1">Inscripciones registradas</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+        </div>
+
+        <!-- Payments Done Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Facturación</p>
+                <h4 class="mt-2 font-bold text-white">Pagos Realizados</h4>
+                <p class="text-xs text-slate-400 mt-1">{{ payments.count }} transacciones registradas</p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5M5.25 7.5h13.5m-12 9h10.5a2.25 2.25 0 0 0 2.25-2.25V9a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 9v5.25a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 to-indigo-600"></div>
+        </div>
+    </div>
+
+    <!-- Main Section Split -->
+    <div class="grid gap-8 lg:grid-cols-3">
+        <!-- Enrolled Courses -->
+        <div class="lg:col-span-2 space-y-6">
+            <h3 class="text-xl font-bold text-white">Mis Cursos Inscritos</h3>
+            
+            <div class="grid gap-6 sm:grid-cols-2">
+                {% for enrollment in enrollments %}
+                <div class="rounded-3xl border border-slate-800 bg-slate-900/20 shadow-xl overflow-hidden hover:border-indigo-500/50 transition duration-200 flex flex-col justify-between">
+                    <div class="p-6">
+                        <span class="inline-flex items-center rounded-md bg-indigo-500/10 px-2.5 py-0.5 text-xs font-bold text-indigo-400 border border-indigo-500/20 mb-3 uppercase tracking-wide">
+                            {{ enrollment.course.code }}
+                        </span>
+                        <h4 class="text-lg font-bold text-white leading-snug">{{ enrollment.course.name }}</h4>
+                        <p class="text-xs text-slate-400 mt-2 line-clamp-2">{{ enrollment.course.description }}</p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-900/40 border-t border-slate-800/40 flex items-center justify-between text-xs text-slate-400">
+                        <span>Estado Inscripción:</span>
+                        <span class="inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider border {% if enrollment.status == 'active' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %}">
+                            {{ enrollment.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="rounded-3xl border border-slate-800 border-dashed p-10 text-center text-slate-500 italic col-span-2">
+                    No estás inscrito en ningún curso actualmente.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Payments & Invoices list -->
+        <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white">Mis Pagos y Facturas</h3>
+            
+            <div class="space-y-4">
+                {% for payment in payments %}
+                <div class="p-5 rounded-2xl border border-slate-800 bg-slate-900/30 flex justify-between items-start gap-4">
+                    <div class="overflow-hidden">
+                        <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">Ref: {{ payment.reference_number|default:"N/A" }}</span>
+                        <h5 class="font-bold text-slate-200 mt-0.5 truncate">{{ payment.enrollment.course.code }}</h5>
+                        <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                            {{ payment.payment_date|date:"d M, Y" }} · {{ payment.get_payment_method_display }}
+                        </p>
+                        {% if payment.invoice %}
+                        <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20 mt-2">
+                            Factura: {{ payment.invoice.invoice_number }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg font-extrabold text-white block">${{ payment.amount }}</span>
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase border {% if payment.status == 'confirmed' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %} mt-1.5">
+                            {{ payment.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-8 rounded-2xl border border-slate-800 border-dashed text-center text-slate-500 italic text-sm">
+                    No tienes pagos registrados.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

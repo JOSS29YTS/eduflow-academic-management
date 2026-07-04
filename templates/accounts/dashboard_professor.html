@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Docente{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    
+    <!-- Top Header -->
+    <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-white">Panel de Docente</h1>
+            <p class="text-sm text-slate-400">Bienvenido, {{ user.first_name }}. Revisa el progreso de tus cursos y la programación de clases.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center rounded-xl bg-slate-900 border border-slate-800 px-4 py-2.5 text-sm font-medium text-slate-300">
+                Docente
+            </span>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- My Courses Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mis Cursos Asignados</p>
+                    <h3 class="mt-2 text-3xl font-extrabold text-white">{{ total_my_courses }}</h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+        </div>
+
+        <!-- Total Sessions Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sesiones Totales</p>
+                    <h3 class="mt-2 text-3xl font-extrabold text-white">{{ total_my_sessions }}</h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+        </div>
+
+        <!-- Attendance Action Card -->
+        <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Control Rápido</p>
+                <h4 class="mt-2 font-bold text-white">Pasar Lista de Asistencia</h4>
+                <p class="text-xs text-slate-400 mt-1">Registra asistencia de la sesión de hoy</p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                </svg>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 to-indigo-600"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Split -->
+    <div class="grid gap-8 lg:grid-cols-3">
+        <!-- Courses List -->
+        <div class="lg:col-span-2 space-y-6">
+            <h3 class="text-xl font-bold text-white">Mis Cursos Asignados</h3>
+            
+            <div class="grid gap-6 sm:grid-cols-2">
+                {% for course in courses %}
+                <div class="rounded-3xl border border-slate-800 bg-slate-900/20 shadow-xl overflow-hidden hover:border-indigo-500/50 transition duration-200 flex flex-col justify-between">
+                    <div class="p-6">
+                        <span class="inline-flex items-center rounded-md bg-indigo-500/10 px-2.5 py-0.5 text-xs font-bold text-indigo-400 border border-indigo-500/20 mb-3 uppercase tracking-wide">
+                            {{ course.code }}
+                        </span>
+                        <h4 class="text-lg font-bold text-white leading-snug">{{ course.name }}</h4>
+                        <p class="text-xs text-slate-400 mt-2 line-clamp-2">{{ course.description }}</p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-900/40 border-t border-slate-800/40 flex items-center justify-between text-xs text-slate-400">
+                        <span>Alumnos: <strong class="text-slate-200">{{ course.enrolled_count }}</strong></span>
+                        <span class="inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider border {% if course.status == 'active' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %}">
+                            {{ course.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="rounded-3xl border border-slate-800 border-dashed p-10 text-center text-slate-500 italic col-span-2">
+                    No tienes cursos asignados en este ciclo.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Upcoming Sessions Sidebar -->
+        <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white">Próximas Clases</h3>
+            
+            <div class="space-y-4">
+                {% for session in upcoming_sessions %}
+                <div class="p-5 rounded-2xl border border-slate-800 bg-slate-900/30 flex gap-4">
+                    <div class="flex flex-col items-center justify-center bg-slate-800 border border-slate-700/60 rounded-xl px-3 py-2 text-center h-fit min-w-[65px]">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ session.date|date:"b" }}</span>
+                        <span class="text-2xl font-extrabold text-white">{{ session.date|date:"d" }}</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">{{ session.course.code }}</span>
+                        <h5 class="font-bold text-slate-200 truncate mt-0.5">{{ session.topic|default:"Sesión programada" }}</h5>
+                        <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            {{ session.start_time|time:"H:i" }} - {{ session.end_time|time:"H:i" }}
+                        </p>
+                        {% if session.classroom %}
+                        <p class="text-[11px] text-indigo-400 mt-1 flex items-center gap-1">
+                            <span class="flex h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+                            {{ session.classroom }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-8 rounded-2xl border border-slate-800 border-dashed text-center text-slate-500 italic text-sm">
+                    No hay clases programadas próximas.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
