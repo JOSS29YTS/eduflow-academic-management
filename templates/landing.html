@@ -1,0 +1,603 @@
+{% extends 'base.html' %}
+
+{% block title %}Bienvenido a EduFlow — Gestión Académica Inteligente{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-100 transition-colors duration-200">
+    
+    <!-- STICKY NAVBAR -->
+    <nav class="sticky top-0 z-40 w-full bg-white/80 dark:bg-[#020617]/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25 text-white font-extrabold text-lg" style="color: #ffffff !important;">EF</span>
+                <span class="text-xl font-bold tracking-tight text-slate-100 dark:text-white">EduFlow</span>
+            </a>
+
+            <!-- Middle links (Desktop) -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition duration-150">Características</a>
+                <a href="#stats" class="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition duration-150">Cifras</a>
+                <a href="#workflow" class="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition duration-150">Funcionamiento</a>
+                <a href="#testimonials" class="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition duration-150">Testimonios</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Sincronized Theme Toggle -->
+                <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', darkMode)" 
+                        class="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-100 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition duration-200 border border-slate-200 dark:border-white/10"
+                        title="Cambiar Tema">
+                    <!-- Sun Icon (visible in Dark Mode) -->
+                    <svg x-show="darkMode" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <circle cx="12" cy="12" r="4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                    <!-- Moon Icon (visible in Light Mode) -->
+                    <svg x-show="!darkMode" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                </button>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md shadow-indigo-600/10 hover:shadow-lg hover:shadow-indigo-600/20 transition duration-200" style="color: #ffffff !important;">
+                        <span>Ir al Panel</span>
+                        <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hidden sm:inline-flex text-slate-700 dark:text-slate-300 hover:text-slate-100 dark:hover:text-white font-medium px-3 py-2 transition">
+                        Iniciar Sesión
+                    </a>
+                    <a href="{% url 'signup' %}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md shadow-indigo-600/10 hover:shadow-lg hover:shadow-indigo-600/20 transition duration-200" style="color: #ffffff !important;">
+                        Registrarse
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative overflow-hidden py-20 lg:py-28 bg-gradient-to-b from-white via-slate-50/50 to-slate-100/50 dark:from-[#020617] dark:via-[#020617]/40 dark:to-[#0f172a]/30">
+        <!-- Glow accents -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            <!-- Badge -->
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-6 uppercase tracking-wider">
+                Diseñado para Portafolio Profesional
+            </span>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-100 dark:text-white max-w-4xl mx-auto leading-[1.15]">
+                Lleva la gestión académica de tu institución al <span class="bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 bg-clip-text text-transparent" style="color: transparent !important;">siguiente nivel</span>
+            </h1>
+            
+            <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Di adiós a las hojas de cálculo manuales. <strong>EduFlow</strong> es la plataforma web todo en uno para el control de diplomados, asistencias en tiempo real, cronogramas y facturación automática en PDF.
+            </p>
+
+            <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition duration-200" style="color: #ffffff !important;">
+                        Gestionar mi Academia
+                        <svg class="ml-2.5 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </a>
+                {% else %}
+                    <a href="{% url 'signup' %}" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition duration-200" style="color: #ffffff !important;">
+                        Registrarme ahora (Demo)
+                        <svg class="ml-2.5 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </a>
+                    <a href="#features" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white dark:bg-[#0f172a] hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-100 dark:text-slate-200 font-semibold border border-slate-200 dark:border-white/10 shadow-sm transition duration-200">
+                        Explorar características
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- PREMIUM INTERACTIVE CSS DASHBOARD MOCKUP -->
+            <div class="relative w-full max-w-4xl mx-auto mt-16 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/50 dark:bg-[#0f172a]/40 p-4 shadow-2xl backdrop-blur-sm">
+                <!-- Top actions resembling browser -->
+                <div class="flex items-center justify-between mb-4 border-b border-slate-200/60 dark:border-white/10 pb-3">
+                    <div class="flex gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-rose-500/85"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/85"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/85"></span>
+                    </div>
+                    <div class="flex-1 max-w-xs mx-auto bg-slate-100 dark:bg-[#020617]/60 border border-slate-200 dark:border-white/10 rounded-lg text-center py-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                        eduflow.com/dashboard/
+                    </div>
+                    <div class="w-12"></div>
+                </div>
+                
+                <!-- Inner mock content -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                    <!-- Card 1: Students count -->
+                    <div class="bg-slate-50/50 dark:bg-[#020617]/30 border border-slate-200/60 dark:border-white/10 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Estudiantes Activos</span>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-100 dark:text-white">154</h3>
+                        </div>
+                        <div class="h-10 w-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Attendance Rate -->
+                    <div class="bg-slate-50/50 dark:bg-[#020617]/30 border border-slate-200/60 dark:border-white/10 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Asistencia Promedio</span>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-100 dark:text-white">94.2%</h3>
+                        </div>
+                        <div class="h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 flex items-center justify-center">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Revenue -->
+                    <div class="bg-slate-50/50 dark:bg-[#020617]/30 border border-slate-200/60 dark:border-white/10 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Facturación Este Mes</span>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-100 dark:text-white">$4,850</h3>
+                        </div>
+                        <div class="h-10 w-10 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Table & Session Area (Desktop layout side-by-side) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-left">
+                    <!-- Recent Invoices -->
+                    <div class="bg-slate-50/50 dark:bg-[#020617]/30 border border-slate-200/60 dark:border-white/10 rounded-xl p-4">
+                        <h4 class="text-sm font-semibold mb-3 text-slate-100 dark:text-white flex items-center gap-1.5">
+                            <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+                            Últimas Facturas Emitidas
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-200/40 dark:border-[#1e293b]/50 pb-2.5 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                    <span class="font-medium text-slate-700 dark:text-slate-300">Juan Pérez</span>
+                                </div>
+                                <span class="text-slate-500 dark:text-slate-400">Diplomado en Python</span>
+                                <span class="font-semibold text-slate-100 dark:text-white">$350.00</span>
+                            </div>
+                            <div class="flex items-center justify-between border-b border-slate-200/40 dark:border-[#1e293b]/50 pb-2.5 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                    <span class="font-medium text-slate-700 dark:text-slate-300">Ana Gómez</span>
+                                </div>
+                                <span class="text-slate-500 dark:text-slate-400">Desarrollo Web Django</span>
+                                <span class="font-semibold text-slate-100 dark:text-white">$350.00</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                                    <span class="font-medium text-slate-700 dark:text-slate-300">Luis Martínez</span>
+                                </div>
+                                <span class="text-slate-500 dark:text-slate-400">PostgreSQL Avanzado</span>
+                                <span class="font-semibold text-slate-100 dark:text-white">$175.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scheduled sessions -->
+                    <div class="bg-slate-50/50 dark:bg-[#020617]/30 border border-slate-200/60 dark:border-white/10 rounded-xl p-4">
+                        <h4 class="text-sm font-semibold mb-3 text-slate-100 dark:text-white flex items-center gap-1.5">
+                            <span class="h-2 w-2 rounded-full bg-purple-500"></span>
+                            Clases Programadas Hoy
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 bg-white dark:bg-[#020617] border border-slate-200 dark:border-white/10 p-2.5 rounded-lg text-xs">
+                                <div class="text-center bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 p-1.5 rounded font-bold w-12 shrink-0">
+                                    18:00
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-slate-100 dark:text-slate-200 truncate">Taller de Celery & Redis</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-[10px] truncate">Prof. Carlos Mendoza · Virtual B</p>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold shrink-0">Activo</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 bg-white dark:bg-[#020617] border border-slate-200 dark:border-white/10 p-2.5 rounded-lg text-xs">
+                                <div class="text-center bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 p-1.5 rounded font-bold w-12 shrink-0">
+                                    20:05
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-slate-100 dark:text-slate-200 truncate">Introducción a Docker</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-[10px] truncate">Prof. Laura Castillo · Virtual A</p>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold shrink-0">Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATS SECTION -->
+    <section id="stats" class="py-16 bg-white dark:bg-[#0f172a] border-y border-slate-200 dark:border-white/10 relative">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 block">
+                    {{ total_courses|default:"3" }}+
+                </span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium text-sm lg:text-base mt-2 block">Cursos Disponibles</span>
+            </div>
+            <div class="text-center">
+                <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 block">
+                    {{ total_students|default:"12" }}+
+                </span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium text-sm lg:text-base mt-2 block">Alumnos Registrados</span>
+            </div>
+            <div class="text-center">
+                <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 block">
+                    {{ total_professors|default:"4" }}+
+                </span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium text-sm lg:text-base mt-2 block">Profesores Activos</span>
+            </div>
+            <div class="text-center">
+                <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400 block">99.9%</span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium text-sm lg:text-base mt-2 block">Facturación Automatizada</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARACTERÍSTICAS -->
+    <section id="features" class="py-24 bg-slate-50/50 dark:bg-[#020617]/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100 dark:text-white tracking-tight">
+                    Todo lo que necesitas para tu gestión académica
+                </h2>
+                <p class="mt-4 text-slate-600 dark:text-slate-400">
+                    Diseñado especialmente para reemplazar complejos archivos de Excel y centralizar toda la información en un solo lugar seguro.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1: Roles -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Autenticación por Roles</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Control de accesos estructurado para 4 roles: <strong>Estudiantes</strong>, <strong>Profesores</strong>, <strong>Coordinadores</strong> y <strong>Administradores</strong>. Cada uno ve exactamente su información.
+                    </p>
+                </div>
+
+                <!-- Feature 2: Invoicing -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Facturación Automática PDF</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Integración con <strong>WeasyPrint</strong> para generar reportes y facturas en formato PDF, y envío automatizado por correo mediante servidores SMTP.
+                    </p>
+                </div>
+
+                <!-- Feature 3: Celery + Redis -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Tareas Asíncronas</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Uso de <strong>Celery</strong> y <strong>Redis</strong> para enviar correos y generar archivos PDF en segundo plano, garantizando una navegación rápida y fluida para el usuario final.
+                    </p>
+                </div>
+
+                <!-- Feature 4: Attendance -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Pase de Lista Digital</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Los profesores pueden tomar asistencia de forma rápida y marcar si el estudiante asistió, faltó, llegó tarde o tiene justificación. Todo visible al instante para coordinadores.
+                    </p>
+                </div>
+
+                <!-- Feature 5: Scheduling -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-650 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Cronograma & Calendario</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Calendario interactivo para organizar aulas, salas, fechas y horarios de clases por curso, previniendo choques horarias y mejorando la planificación del diplomado.
+                    </p>
+                </div>
+
+                <!-- Feature 6: REST API docs -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 text-left">
+                    <div class="h-12 w-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-5 shrink-0">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-100 dark:text-white">Documentación API Swagger</h3>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        API RESTful completamente documentada bajo estándares OpenAPI con interfaces interactivas como <strong>Swagger UI</strong> y <strong>ReDoc</strong> para integraciones externas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE WORKFLOW SECTION -->
+    <section id="workflow" class="py-24 bg-white dark:bg-[#0f172a] border-y border-slate-200 dark:border-white/10">
+        <div x-data="{ activeStep: 1 }" class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100 dark:text-white tracking-tight">
+                    Flujo de Trabajo Completamente Automatizado
+                </h2>
+                <p class="mt-4 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    EduFlow digitaliza y simplifica cada paso del proceso operativo de tu academia, desde la captación hasta la cobranza.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Steps Menu -->
+                <div class="lg:col-span-5 space-y-4">
+                    <button @click="activeStep = 1" 
+                            :class="activeStep === 1 ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-500/5' : 'border-slate-200 dark:border-white/10 hover:bg-slate-100/50 dark:hover:bg-white/5'"
+                            class="w-full text-left p-4 rounded-2xl border transition duration-150 flex gap-4 items-start focus:outline-none">
+                        <span :class="activeStep === 1 ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                              class="h-8 w-8 rounded-lg font-bold flex items-center justify-center shrink-0 transition" :style="activeStep === 1 ? 'color: #ffffff !important;' : ''">1</span>
+                        <div>
+                            <h4 class="font-bold text-slate-100 dark:text-slate-200 text-sm">1. Registro de Estudiantes</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">El estudiante se registra de manera digital completando el formulario. El sistema crea su cuenta de forma inactiva por seguridad.</p>
+                        </div>
+                    </button>
+                    
+                    <button @click="activeStep = 2" 
+                            :class="activeStep === 2 ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-500/5' : 'border-slate-200 dark:border-white/10 hover:bg-slate-100/50 dark:hover:bg-white/5'"
+                            class="w-full text-left p-4 rounded-2xl border transition duration-150 flex gap-4 items-start focus:outline-none">
+                        <span :class="activeStep === 2 ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                              class="h-8 w-8 rounded-lg font-bold flex items-center justify-center shrink-0 transition" :style="activeStep === 2 ? 'color: #ffffff !important;' : ''">2</span>
+                        <div>
+                            <h4 class="font-bold text-slate-100 dark:text-slate-200 text-sm">2. Habilitación Administrativa</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">El administrador revisa los datos de los estudiantes nuevos desde su panel, aprueba la cuenta y le otorga acceso al sistema.</p>
+                        </div>
+                    </button>
+                    
+                    <button @click="activeStep = 3" 
+                            :class="activeStep === 3 ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-500/5' : 'border-slate-200 dark:border-white/10 hover:bg-slate-100/50 dark:hover:bg-white/5'"
+                            class="w-full text-left p-4 rounded-2xl border transition duration-150 flex gap-4 items-start focus:outline-none">
+                        <span :class="activeStep === 3 ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                              class="h-8 w-8 rounded-lg font-bold flex items-center justify-center shrink-0 transition" :style="activeStep === 3 ? 'color: #ffffff !important;' : ''">3</span>
+                        <div>
+                            <h4 class="font-bold text-slate-100 dark:text-slate-200 text-sm">3. Control de Clases y Lista</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">El profesor pasa lista en tiempo real en la sesión de clases programada. Las métricas de asistencia se actualizan al instante.</p>
+                        </div>
+                    </button>
+                    
+                    <button @click="activeStep = 4" 
+                            :class="activeStep === 4 ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-500/5' : 'border-slate-200 dark:border-white/10 hover:bg-slate-100/50 dark:hover:bg-white/5'"
+                            class="w-full text-left p-4 rounded-2xl border transition duration-150 flex gap-4 items-start focus:outline-none">
+                        <span :class="activeStep === 4 ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                              class="h-8 w-8 rounded-lg font-bold flex items-center justify-center shrink-0 transition" :style="activeStep === 4 ? 'color: #ffffff !important;' : ''">4</span>
+                        <div>
+                            <h4 class="font-bold text-slate-100 dark:text-slate-200 text-sm">4. Confirmación de Pago & PDF</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Al registrarse un pago, Celery procesa en segundo plano la factura en PDF usando WeasyPrint y la envía de inmediato por correo.</p>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Step Preview Graphic -->
+                <div class="lg:col-span-7 bg-slate-100 dark:bg-[#020617] border border-slate-200/80 dark:border-white/10 p-6 sm:p-8 rounded-3xl h-[340px] flex flex-col justify-center relative overflow-hidden shadow-inner">
+                    <!-- Step 1 View -->
+                    <div x-show="activeStep === 1" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-4">
+                        <span class="inline-flex items-center rounded-md bg-indigo-500/10 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 uppercase tracking-wide">Estudiante</span>
+                        <h3 class="text-xl font-bold text-slate-100 dark:text-white">Formulario de Inscripción Digital</h3>
+                        <div class="bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-md space-y-3 max-w-md mx-auto">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+                                <div class="h-9 bg-slate-50 dark:bg-[#020617] rounded-xl border border-slate-200/60 dark:border-white/10 text-xs flex items-center px-3 text-slate-500 dark:text-slate-400">Juan Pérez</div>
+                                <div class="h-9 bg-slate-50 dark:bg-[#020617] rounded-xl border border-slate-200/60 dark:border-white/10 text-xs flex items-center px-3 text-slate-500 dark:text-slate-400">juan@email.com</div>
+                            </div>
+                            <div class="h-9 bg-slate-50 dark:bg-[#020617] rounded-xl border border-slate-200/60 dark:border-white/10 text-xs flex items-center px-3 text-slate-500 dark:text-slate-400 text-left">Seleccionar: Diplomado en Python Django</div>
+                            <div class="h-9 bg-indigo-600 rounded-xl text-xs text-white flex items-center justify-center font-bold" style="color: #ffffff !important;">Registrarse como Estudiante</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 View -->
+                    <div x-show="activeStep === 2" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-4" x-cloak>
+                        <span class="inline-flex items-center rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-600 dark:text-amber-500 border border-amber-500/20 uppercase tracking-wide">Administración</span>
+                        <h3 class="text-xl font-bold text-slate-100 dark:text-white">Aprobación Rápida de Cuentas</h3>
+                        <div class="bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-md max-w-md mx-auto text-left">
+                            <div class="flex items-center justify-between text-xs border-b border-slate-100 dark:border-[#1e293b]/50 pb-3">
+                                <div>
+                                    <span class="font-bold text-slate-100 dark:text-white">Juan Pérez</span>
+                                    <span class="text-slate-500 dark:text-slate-400 block text-[10px] mt-0.5">Estudiante · juan@email.com</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="px-2.5 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-450 font-bold rounded-lg cursor-pointer text-[10px] border border-emerald-500/20">Aprobar</span>
+                                    <span class="px-2.5 py-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold rounded-lg cursor-pointer text-[10px] border border-rose-500/20">Rechazar</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-[10px] text-slate-500 dark:text-slate-400">Una vez aprobada, se activará su cuenta y el sistema le permitirá iniciar sesión para ver sus cursos.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3 View -->
+                    <div x-show="activeStep === 3" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-4" x-cloak>
+                        <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20 uppercase tracking-wide">Profesor</span>
+                        <h3 class="text-xl font-bold text-slate-100 dark:text-white">Control de Asistencia Digital</h3>
+                        <div class="bg-white dark:bg-[#0f172a] p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-md max-w-md mx-auto space-y-2 text-left">
+                            <div class="flex items-center justify-between text-xs border-b border-slate-100 dark:border-[#1e293b]/40 pb-2">
+                                <span class="text-slate-700 dark:text-slate-300 font-medium">Juan Pérez</span>
+                                <div class="flex gap-1">
+                                    <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-bold text-[10px]" style="color: #ffffff !important;">P</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">A</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">T</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">J</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs border-b border-slate-100 dark:border-[#1e293b]/40 pb-2">
+                                <span class="text-slate-700 dark:text-slate-300 font-medium">Ana Gómez</span>
+                                <div class="flex gap-1">
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">P</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">A</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-amber-500 text-white font-bold text-[10px]" style="color: #ffffff !important;">T</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">J</span>
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-slate-400 dark:text-slate-500 italic mt-2 text-right">P = Presente · A = Ausente · T = Tardanza · J = Justificado</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4 View -->
+                    <div x-show="activeStep === 4" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-4" x-cloak>
+                        <span class="inline-flex items-center rounded-md bg-purple-500/10 px-2.5 py-1 text-xs font-semibold text-purple-600 dark:text-purple-400 border border-purple-500/20 uppercase tracking-wide">Celery Worker</span>
+                        <h3 class="text-xl font-bold text-slate-100 dark:text-white">Emisión de Facturas y Envío por Email</h3>
+                        <div class="bg-white dark:bg-[#0f172a] p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-md max-w-md mx-auto flex items-center gap-4 text-left">
+                            <div class="h-12 w-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 shrink-0 border border-rose-500/10">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 overflow-hidden text-left">
+                                <span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block tracking-wider">✓ PROCESADO EN REDIS</span>
+                                <span class="font-bold text-slate-100 dark:text-white text-sm block mt-0.5">Factura_EF_1024.pdf</span>
+                                <span class="text-slate-500 dark:text-slate-400 text-[10px] block truncate mt-0.5">Enviado exitosamente a juan@email.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="testimonials" class="py-24 bg-slate-50/50 dark:bg-[#020617]/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100 dark:text-white tracking-tight">
+                    Lo que dicen nuestros usuarios
+                </h2>
+                <p class="mt-4 text-slate-600 dark:text-slate-400">
+                    Testimonios simulados que representan el impacto real de implementar esta solución académica.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+                    <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed italic">
+                        "Antes de EduFlow, perdíamos horas registrando asistencias en cuadernos y enviando facturas una a una por correo. Ahora todo se hace automáticamente en segundos. ¡El cambio a nivel operativo es inmenso!"
+                    </p>
+                    <div class="flex items-center gap-3 mt-6">
+                        <div class="h-10 w-10 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-sm border border-indigo-500/20">
+                            C
+                        </div>
+                        <div>
+                            <span class="text-sm font-bold text-slate-100 dark:text-white block">Coordinador General</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+                    <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed italic">
+                        "Como profesor, tomar asistencia me tomaba hasta 10 minutos de clase. Con el panel móvil de EduFlow, solo me toma 10 segundos marcar en mi celular y volver a enfocarme en enseñar."
+                    </p>
+                    <div class="flex items-center gap-3 mt-6">
+                        <div class="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm border border-emerald-500/20">
+                            P
+                        </div>
+                        <div>
+                            <span class="text-sm font-bold text-slate-100 dark:text-white block">Profesor de Programación</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+                    <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed italic">
+                        "Me encanta poder ver el calendario de mis clases y mi tasa de asistencia desde mi panel. Además, cada vez que hago el pago mensual del diplomado, recibo mi factura PDF al instante en mi correo."
+                    </p>
+                    <div class="flex items-center gap-3 mt-6">
+                        <div class="h-10 w-10 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm border border-purple-500/20">
+                            E
+                        </div>
+                        <div>
+                            <span class="text-sm font-bold text-slate-100 dark:text-white block">Estudiante de Diplomado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION FINAL -->
+    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white relative overflow-hidden">
+        <!-- Glow accents -->
+        <div class="absolute inset-0 bg-indigo-900/10 pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" style="color: #ffffff !important;">
+                ¿Listo para modernizar tu gestión académica?
+            </h2>
+            <p class="mt-4 text-indigo-100 max-w-xl mx-auto text-base">
+                Regístrate hoy mismo y explora la demo del sistema de administración académica EduFlow.
+            </p>
+            <div class="mt-10">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white text-indigo-600 hover:bg-slate-100 font-bold text-base shadow-lg transition duration-200" style="color: #4f46e5 !important;">
+                        Ir a mi Panel de Control
+                    </a>
+                {% else %}
+                    <a href="{% url 'signup' %}" class="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white text-indigo-600 hover:bg-slate-100 font-bold text-base shadow-lg transition duration-200" style="color: #4f46e5 !important;">
+                        Registrarme Gratis
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white dark:bg-[#020617] border-t border-slate-200 dark:border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2.5">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-extrabold text-sm" style="color: #ffffff !important;">EF</span>
+                <span class="text-lg font-bold tracking-tight text-slate-100 dark:text-white">EduFlow</span>
+            </div>
+            
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+                &copy; 2026 EduFlow. Todos los derechos reservados. Creado con Django, Tailwind CSS, Alpine.js y Celery.
+            </p>
+            
+            <div class="flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400">
+                <a href="https://github.com/JOSS29YTS/eduflow-academic-management" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Código Fuente</a>
+                <span>&middot;</span>
+                <a href="/api/docs/" target="_blank" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Documentación API</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+{% endblock %}

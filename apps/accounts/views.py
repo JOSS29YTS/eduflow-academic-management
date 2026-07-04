@@ -123,7 +123,25 @@ def user_profile(request):
     return render(request, 'accounts/profile.html', {'form': form})
 
 
+def landing_page(request):
+    """
+    Public landing page view displaying system stats.
+    """
+    total_courses = Course.objects.count()
+    total_students = CustomUser.objects.filter(role=CustomUser.Role.STUDENT).count()
+    total_professors = CustomUser.objects.filter(role=CustomUser.Role.PROFESSOR).count()
+    
+    context = {
+        'is_landing': True,
+        'total_courses': total_courses,
+        'total_students': total_students,
+        'total_professors': total_professors,
+    }
+    return render(request, 'landing.html', context)
+
+
 def timezone_today():
     """Helper to return current date in local timezone"""
     from django.utils import timezone
     return timezone.localdate()
+
