@@ -7,9 +7,9 @@
 **Plataforma web completa para la administración de diplomados y cursos:**
 pagos, facturación automática, asistencia, cronogramas y roles de usuario.
 
-[**Demo en vivo →**](https://eduflow-demo.up.railway.app) &nbsp;·&nbsp;
-[Documentación API](https://eduflow-demo.up.railway.app/api/docs/) &nbsp;·&nbsp;
-[Reportar un bug](https://github.com/tu-usuario/eduflow/issues)
+[**Despliegue en Render (Producción) →**](https://eduflow-academic-management.onrender.com) &nbsp;·&nbsp;
+[Documentación API](https://eduflow-academic-management.onrender.com/api/docs/) &nbsp;·&nbsp;
+[Reportar un bug](https://github.com/JOSS29YTS/eduflow-academic-management/issues)
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-5.0-092E20?style=flat-square&logo=django&logoColor=white)
@@ -32,15 +32,9 @@ EduFlow nació para resolver exactamente eso: una aplicación web segura, con ro
 
 ## Capturas de pantalla
 
-> **Nota:** Las imágenes a continuación usan placeholders. Al hacer tu deploy, reemplázalas con capturas reales usando la guía al final de este README.
+> **Nota:** Puedes agregar tus propias capturas de pantalla de la aplicación local o de producción guardando las imágenes en una carpeta llamada `docs/screenshots/` y enlazándolas en este espacio.
 
-| Dashboard del administrador | Lista de cursos activos |
-|:---:|:---:|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Cursos](docs/screenshots/courses.png) |
-
-| Panel del profesor — pasar asistencia | Factura generada automáticamente |
-|:---:|:---:|
-| ![Asistencia](docs/screenshots/attendance.png) | ![Factura](docs/screenshots/invoice.png) |
+*(Próximamente capturas de pantalla de la interfaz de usuario de EduFlow)*
 
 ---
 
@@ -150,36 +144,30 @@ CustomUser (role=student)
 - Python 3.12+
 - PostgreSQL 16+
 - Redis 7+
-- Node.js 20+ (para compilar Tailwind)
 
 ### Pasos
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/eduflow.git
-cd eduflow
+git clone https://github.com/JOSS29YTS/eduflow-academic-management.git
+cd eduflow-academic-management
 
 # 2. Crear entorno virtual e instalar dependencias
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate          # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
 # 3. Copiar variables de entorno
 cp .env.example .env
 # Editar .env con tus credenciales de PostgreSQL, Redis y SMTP
 
-# 4. Aplicar migraciones y cargar datos de ejemplo
+# 4. Aplicar migraciones en la base de datos
 python manage.py migrate
-python manage.py loaddata fixtures/demo_data.json
 
-# 5. Crear superusuario
-python manage.py createsuperuser
+# 5. Inicializar la base de datos limpia con los usuarios por defecto
+python scratch/reseed_db.py
 
-# 6. Compilar estilos Tailwind
-npm install
-npm run build:css
-
-# 7. Iniciar el servidor de desarrollo
+# 6. Iniciar el servidor de desarrollo
 python manage.py runserver
 ```
 
@@ -188,8 +176,8 @@ Luego abre [http://localhost:8000](http://localhost:8000).
 ### Con Docker (recomendado)
 
 ```bash
-git clone https://github.com/tu-usuario/eduflow.git
-cd eduflow
+git clone https://github.com/JOSS29YTS/eduflow-academic-management.git
+cd eduflow-academic-management
 cp .env.example .env
 docker compose up --build
 ```
@@ -250,12 +238,12 @@ Ejemplo de autenticación:
 
 ```bash
 # Obtener token
-curl -X POST https://eduflow-demo.up.railway.app/api/auth/token/ \
+curl -X POST https://eduflow-academic-management.onrender.com/api/auth/token/ \
   -H "Content-Type: application/json" \
-  -d '{"username": "demo_admin", "password": "demo1234"}'
+  -d '{"username": "demo_profesor", "password": "demo1234"}'
 
 # Usar el token en solicitudes protegidas
-curl https://eduflow-demo.up.railway.app/api/courses/ \
+curl https://eduflow-academic-management.onrender.com/api/courses/ \
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -263,14 +251,15 @@ curl https://eduflow-demo.up.railway.app/api/courses/ \
 
 ## Usuarios de demostración
 
-La base de datos demo incluye estos usuarios de prueba:
+La base de datos inicializada incluye las siguientes cuentas de prueba:
 
-| Rol | Usuario | Contraseña |
-|---|---|---|
-| Administrador | `demo_admin` | `demo1234` |
-| Coordinador | `demo_coord` | `demo1234` |
-| Profesor | `demo_profesor` | `demo1234` |
-| Estudiante | `demo_estudiante` | `demo1234` |
+| Rol | Usuario | Contraseña | Permisos |
+|---|---|---|---|
+| Administrador / Superusuario | *Privado* | *Definido en producción* | Gestión total en Django Admin y el Portal |
+| Profesor | `demo_profesor` | `demo1234` | Panel docente, tomar asistencia |
+| Estudiante | `demo_estudiante` | `demo1234` | Ver cursos, estatus de asistencia y facturación |
+
+> 🔒 **Nota de seguridad:** Las credenciales del Administrador principal no se publican en este documento. Si estás clonando este repositorio de forma local, puedes crear tu propio superusuario ejecutando `python manage.py createsuperuser` en tu terminal.
 
 ---
 
@@ -312,26 +301,6 @@ Este proyecto usa [Conventional Commits](https://www.conventionalcommits.org/es/
 
 ---
 
-## Cómo agregar capturas de pantalla reales
-
-Una vez que tu proyecto esté desplegado:
-
-1. Crea la carpeta `docs/screenshots/` en tu repositorio.
-2. Toma capturas con una resolución de 1280×800 px mínimo.
-3. Optimiza las imágenes: `npx sharp-cli input.png -o output.png --resize 1280`
-4. Nómbralas igual que las referencias en este README: `dashboard.png`, `courses.png`, `attendance.png`, `invoice.png`.
-5. Haz commit y push — GitHub las mostrará automáticamente.
-
-Para el GIF animado del hero (opcional pero muy llamativo):
-
-```bash
-# Instalar LICEcap (Windows/Mac) o Peek (Linux)
-# Graba el flujo: login → dashboard → pasar asistencia → ver factura
-# Guarda como docs/screenshots/demo.gif
-```
-
----
-
 ## Licencia
 
 Distribuido bajo la licencia MIT. Ver [`LICENSE`](LICENSE) para más información.
@@ -340,8 +309,8 @@ Distribuido bajo la licencia MIT. Ver [`LICENSE`](LICENSE) para más informació
 
 <div align="center">
 
-Desarrollado por **[Tu Nombre]** como proyecto final de diplomado · 2026
+Desarrollado por **[Alejandro Villa](https://github.com/JOSS29YTS)** como proyecto final de diplomado · 2026
 
-[LinkedIn](https://linkedin.com/in/tu-usuario) &nbsp;·&nbsp; [Portafolio](https://tu-sitio.com) &nbsp;·&nbsp; [GitHub](https://github.com/tu-usuario)
+[GitHub](https://github.com/JOSS29YTS) &nbsp;·&nbsp; [Email](mailto:alejandrovilla2912@gmail.com)
 
 </div>
