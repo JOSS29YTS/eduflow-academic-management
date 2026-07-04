@@ -146,8 +146,13 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
-# Configuración de Correo para Desarrollo (Consola)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Configuración de Correo
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env('EMAIL_PORT', cast=int, default=587)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', cast=bool, default=True)
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='EduFlow <noreply@eduflow.com>')
 
 # Django REST Framework & JWT Configuration
