@@ -57,6 +57,11 @@ def course_detail(request, course_id):
     student_enrollment = None
     if user.role == CustomUser.Role.STUDENT:
         student_enrollment = Enrollment.objects.filter(student=user, course=course).first()
+        if student_enrollment:
+            from .models import Attendance
+            attendances = {att.session_id: att for att in Attendance.objects.filter(student=user, session__course=course)}
+            for session in sessions:
+                session.student_attendance = attendances.get(session.id)
         
     context = {
         'course': course,

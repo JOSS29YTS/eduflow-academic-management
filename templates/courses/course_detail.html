@@ -38,7 +38,15 @@
                     <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase border mt-2 {% if student_enrollment.status == 'active' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %}">
                         {{ student_enrollment.get_status_display }}
                     </span>
-                    <p class="text-[10px] text-slate-400 mt-3 italic">{{ student_enrollment.notes|default:"Esperando validación." }}</p>
+                    <p class="text-[10px] text-slate-400 mt-3 italic">
+                        {% if student_enrollment.notes %}
+                            {{ student_enrollment.notes }}
+                        {% elif student_enrollment.status == 'pending' %}
+                            Esperando validación.
+                        {% else %}
+                            Inscripción confirmada.
+                        {% endif %}
+                    </p>
                 {% else %}
                     <span class="text-xs text-slate-400">Costo de inversión:</span>
                     <span class="text-3xl font-extrabold text-indigo-400 mt-1">${{ course.price }}</span>
@@ -153,7 +161,7 @@
                     </div>
                 </div>
 
-                <!-- Admin & Teacher Action: Control Asistencia -->
+                <!-- Admin & Teacher Action: Control Asistencia or Student View: Attendance Status -->
                 {% if show_students %}
                 <div class="flex-shrink-0">
                     <a href="{% url 'session_attendance' session.id %}" class="inline-flex items-center gap-1 justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition shadow-md shadow-indigo-600/10">
@@ -162,6 +170,20 @@
                         </svg>
                         Pasar Asistencia
                     </a>
+                </div>
+                {% elif student_enrollment %}
+                <div class="flex-shrink-0">
+                    {% if session.student_attendance %}
+                        <span class="inline-flex items-center rounded-xl px-3 py-1.5 text-xs font-bold uppercase border
+                            {% if session.student_attendance.status == 'present' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20
+                            {% elif session.student_attendance.status == 'absent' %}bg-rose-500/10 text-rose-400 border-rose-500/20
+                            {% elif session.student_attendance.status == 'late' %}bg-amber-500/10 text-amber-400 border-amber-500/20
+                            {% else %}bg-purple-500/10 text-purple-400 border-purple-500/20{% endif %}">
+                            {{ session.student_attendance.get_status_display }}
+                        </span>
+                    {% else %}
+                        <span class="text-xs text-slate-500 italic">Sin registro</span>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
