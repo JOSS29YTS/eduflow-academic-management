@@ -30,11 +30,17 @@ EduFlow nació para resolver exactamente eso: una aplicación web segura, con ro
 
 ---
 
-## Capturas de pantalla
+## Capturas de pantalla (Vista del Docente)
 
-> **Nota:** Puedes agregar tus propias capturas de pantalla de la aplicación local o de producción guardando las imágenes en una carpeta llamada `docs/screenshots/` y enlazándolas en este espacio.
+A continuación se muestran las capturas de pantalla del flujo de la interfaz del docente en la plataforma:
 
-*(Próximamente capturas de pantalla de la interfaz de usuario de EduFlow)*
+| **Panel de Control (Dashboard)** | **Listado de Cursos** |
+|:---:|:---:|
+| ![Panel de Control](docs/screenshots/dashboard.png) | ![Listado de Cursos](docs/screenshots/courses.png) |
+
+| **Detalle del Curso** | **Control de Asistencia** |
+|:---:|:---:|
+| ![Detalle del Curso](docs/screenshots/course_detail.png) | ![Control de Asistencia](docs/screenshots/attendance.png) |
 
 ---
 
