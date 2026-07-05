@@ -199,34 +199,36 @@
     {% if show_students %}
     <div x-show="activeTab === 'students'" class="space-y-6" x-cloak>
         <div class="rounded-3xl border border-slate-800 bg-slate-900/20 shadow-xl overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="border-b border-slate-800/40 text-xs font-bold text-slate-400 uppercase bg-slate-950/20">
-                        <th class="px-6 py-4">Estudiante</th>
-                        <th class="px-6 py-4">Correo</th>
-                        <th class="px-6 py-4">Teléfono</th>
-                        <th class="px-6 py-4">Estado Matrícula</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800/40 text-sm">
-                    {% for enrollment in enrollments %}
-                    <tr class="hover:bg-slate-900/30 transition duration-150">
-                        <td class="px-6 py-4 font-medium text-slate-200">{{ enrollment.student.full_name }}</td>
-                        <td class="px-6 py-4 text-slate-400">{{ enrollment.student.email }}</td>
-                        <td class="px-6 py-4 text-slate-400">{{ enrollment.student.phone|default:"—" }}</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium border {% if enrollment.status == 'active' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %}">
-                                {{ enrollment.get_status_display }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-8 text-center text-slate-500 italic">No hay estudiantes inscritos en este curso todavía.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800/40 text-xs font-bold text-slate-400 uppercase bg-slate-950/20">
+                            <th class="px-6 py-4">Estudiante</th>
+                            <th class="px-6 py-4 hidden sm:table-cell">Correo</th>
+                            <th class="px-6 py-4 hidden md:table-cell">Teléfono</th>
+                            <th class="px-6 py-4">Estado Matrícula</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/40 text-sm">
+                        {% for enrollment in enrollments %}
+                        <tr class="hover:bg-slate-900/30 transition duration-150">
+                            <td class="px-6 py-4 font-medium text-slate-200">{{ enrollment.student.full_name }}</td>
+                            <td class="px-6 py-4 text-slate-400 hidden sm:table-cell">{{ enrollment.student.email }}</td>
+                            <td class="px-6 py-4 text-slate-400 hidden md:table-cell">{{ enrollment.student.phone|default:"—" }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium border {% if enrollment.status == 'active' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20{% else %}bg-amber-500/10 text-amber-400 border-amber-500/20{% endif %}">
+                                    {{ enrollment.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-8 text-center text-slate-500 italic">No hay estudiantes inscritos en este curso todavía.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     {% endif %}

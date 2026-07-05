@@ -117,7 +117,7 @@
         }
     </style>
 </head>
-<body class="h-full flex flex-col justify-center items-center bg-slate-950 text-slate-100 px-4 relative overflow-hidden" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'light' }">
+<body class="min-h-full flex flex-col justify-center items-center bg-slate-950 text-slate-100 px-4 relative" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'light' }">
     
     <!-- Back to Landing Button (Top-Left) -->
     <div class="fixed top-6 left-6 z-50">
@@ -127,7 +127,7 @@
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
-            <span>Volver al Inicio</span>
+            <span class="hidden sm:inline">Volver al Inicio</span>
         </a>
     </div>
     
